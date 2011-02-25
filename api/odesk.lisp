@@ -39,16 +39,35 @@
     :accessor data-format
     :documentation "Data Format")))
 
-(defgeneric urlencode (api)
-  (:documentation "Encode api slots as url parameters."))
+(defgeneric signurl (api params)
+  (:documentation "Sign url params."))
 
-(defmethod urlencode ((api api))
+(defmethod signurl ((api api) params)
+  (let* ((sorted-params (sort params
+                              #'string<
+                              :key #'car))
+         (flaten-params (format nil
+                                "~(~{~2,'0X~}~)"
+                                (map 'list
+                                     #'(lambda (lst)
+                                         (concatenate 'string
+                                                      (car lst)
+                                                      (cdr lst)))
+                                     params))))
+    (with-accessors ((secret-key secret-key)) api
+      (format nil "~(~{~2,'0X~}~)"
+              (map 'list #'identity
+                   (md5:md5sum-sequence (concatenate 'string
+                                                     secret-key
+                                                     flaten-params)))))))
+  
+(defgeneric urlencode (api params)
+  (:documentation "Encode url parameters."))
+
+(defmethod urlencode ((api api) params)
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
     (list (cons "api_key" public-key)
           (cons "api_token" api-token)
-          (cons "api_sig"
-                (format nil "~(~{~2,'0X~}~)"
-                        (map 'list #'identity
-                             (md5:md5sum-sequence secret-key)))))))
+          (cons "api_sig" (signurl api params)))))
