@@ -43,7 +43,8 @@
   (:documentation "Sign url params."))
 
 (defmethod signurl ((api api) params)
-  (let* ((sorted-params (sort params
+  (let* ((copy-params (copy-tree params))
+         (sorted-params (sort copy-params
                               #'string<
                               :key #'car))
          (flaten-params (format nil
@@ -53,14 +54,14 @@
                                          (concatenate 'string
                                                       (car lst)
                                                       (cdr lst)))
-                                     params))))
+                                     sorted-params))))
     (with-accessors ((secret-key secret-key)) api
       (format nil "~(~{~2,'0X~}~)"
               (map 'list #'identity
                    (md5:md5sum-sequence (concatenate 'string
                                                      secret-key
                                                      flaten-params)))))))
-  
+
 (defgeneric urlencode (api params)
   (:documentation "Encode url parameters."))
 
@@ -68,6 +69,7 @@
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
-    (list (cons "api_key" public-key)
-          (cons "api_token" api-token)
-          (cons "api_sig" (signurl api params)))))
+    (append (list (cons "api_key" public-key)
+                  (cons "api_token" api-token)
+                  (cons "api_sig" (signurl api params)))
+            params)))
