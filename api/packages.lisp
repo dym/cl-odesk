@@ -10,4 +10,5 @@
   (:export :api-json
            :api-xml
            :url-encode
+           :url-read
            :get-page))

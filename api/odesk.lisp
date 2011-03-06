@@ -63,7 +63,7 @@
                    (api-token api-token)) api
     (append (list (cons "api_key" public-key)
                   (cons "api_token" api-token)
-                  (cons "api_sig" (signurl api params)))
+                  (cons "api_sig" (sign-url api params)))
             params)))
 
 (defgeneric url-read (api url params &key method)
@@ -81,9 +81,17 @@
           (setf copy-params
                 (append (list (cons "http_method"
                                     (string-downcase method))))))
-      (parse-page (get-page get-url
-                            :method method
-                            (url-encode api copy-params))))))
+      (parse-page api (get-page get-url
+                                :method method
+                                :params (url-encode api copy-params))))))
 
 (defgeneric parse-page (api page)
   (:documentation "Parse fetched page."))
+
+(defmethod parse-page ((api api) page)
+  (let ((code (gethash 'code page))
+        (text (gethash 'text page)))
+    (if (eql code 200) ; that measn HTTP_OK
+        text
+        nil)))
+  
