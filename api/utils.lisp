@@ -2,20 +2,12 @@
 
 (in-package :odesk)
 
-(defparameter *user-agent* "cl-odesk (Common Lisp oDesk Library) ver. 0.0.0")
-
-(defparameter *url-login* "https://www.odesk.com/login.php")
-(defparameter *url-auth* "https://www.odesk.com/services/api/auth")
-(defparameter *url-tokens* "https://www.odesk.com/api/auth/v1/keys/tokens.xml")
-(defparameter *url-frobs* "https://www.odesk.com/api/auth/v1/keys/frobs.xml")
-
-
 (defun get-page (url &key (method :get) params)
   (let* ((return-hash (make-hash-table))
          (request (multiple-value-list
                    (http-request url
                                  :want-stream t
-                                 :user-agent :firefox
+                                 :user-agent *user-agent*
                                  :method method
                                  :parameters params)))
          (status-code (elt request 1))
