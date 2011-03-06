@@ -12,5 +12,6 @@
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
   :license "BSD"
   :components ((:file "packages")
-               (:file "odesk" :depends-on ("packages")))
-  :depends-on (#:md5 #:drakma))
+               (:file "utils" :depends-on ("packages"))
+               (:file "odesk" :depends-on ("packages" "utils")))
+  :depends-on (#:iterate #:md5 #:drakma))

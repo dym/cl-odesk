@@ -2,14 +2,6 @@
 
 (in-package :odesk)
 
-(defconstant user-agent "cl-odesk (Common Lisp oDesk Library)")
-
-(defconstant url-login "https://www.odesk.com/login.php")
-(defconstant url-auth "https://www.odesk.com/services/api/auth")
-(defconstant url-tokens "https://www.odesk.com/api/auth/v1/keys/tokens.xml")
-(defconstant url-frobs "https://www.odesk.com/api/auth/v1/keys/frobs.xml")
-
-
 (defclass api ()
   ((public-key
     :initarg :public-key

@@ -4,8 +4,10 @@
 
 (defpackage :odesk
   (:use :common-lisp
+        :iter
         :md5
         :drakma)
   (:export :api-json
            :api-xml
-           :urlencode))
+           :urlencode
+           :get-page))
