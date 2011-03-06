@@ -9,5 +9,5 @@
         :drakma)
   (:export :api-json
            :api-xml
-           :urlencode
+           :url-encode
            :get-page))

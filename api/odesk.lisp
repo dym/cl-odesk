@@ -31,10 +31,10 @@
     :accessor data-format
     :documentation "Data Format")))
 
-(defgeneric signurl (api params)
+(defgeneric sign-url (api params)
   (:documentation "Sign url params."))
 
-(defmethod signurl ((api api) params)
+(defmethod sign-url ((api api) params)
   (let* ((copy-params (copy-tree params))
          (sorted-params (sort copy-params
                               #'string<
@@ -54,10 +54,10 @@
                                                      secret-key
                                                      flaten-params)))))))
 
-(defgeneric urlencode (api params)
+(defgeneric url-encode (api params)
   (:documentation "Encode url parameters."))
 
-(defmethod urlencode ((api api) params)
+(defmethod url-encode ((api api) params)
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
@@ -65,3 +65,25 @@
                   (cons "api_token" api-token)
                   (cons "api_sig" (signurl api params)))
             params)))
+
+(defgeneric url-read (api url params &key method)
+  (:documentation "Return parsed object."))
+
+(defmethod url-read ((api api) url params &key (method :get))
+  (with-slots ((data-format data-format)) api
+    (let ((get-url (concatenate 'string
+                                url
+                                "."
+                                data-format))
+          (copy-params (copy-tree params)))
+      (if (or (eql method :put)
+              (eql method :delete))
+          (setf copy-params
+                (append (list (cons "http_method"
+                                    (string-downcase method))))))
+      (parse-page (get-page get-url
+                            :method method
+                            (url-encode api copy-params))))))
+
+(defgeneric parse-page (api page)
+  (:documentation "Parse fetched page."))
