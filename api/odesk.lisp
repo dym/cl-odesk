@@ -17,7 +17,17 @@
     :initarg :api-token
     :initform (error "Must supply api token.")
     :accessor api-token
-    :documentation "Api token")))
+    :documentation "Api token")
+   (api-version
+    :initarg :api-version
+    :initform 1
+    :accessor api-version
+    :documentation "Major version of the API.")
+   (base-url
+    :initarg :base-url
+    :initform *api-base-url*
+    :accessor base-url
+    :documentation "Base url for API requests.")))
 
 (defclass api-json (api)
   ((data-format
@@ -94,4 +104,22 @@
     (if (eql code 200) ; that measn HTTP_OK
         text
         nil)))
-  
+
+(defmacro def-req (request (&key url (method :get) (version nil) (params nil)) docstring)
+  `(progn
+     (defgeneric ,request (api &key ,`params)
+       (:documentation ,docstring))
+     (defmethod ,request ((api api) &key ,`params)
+       (with-slots ((base-url base-url)
+                    (api-version api-version)) api
+         (let* ((request-str (string-downcase ',request))
+                (request-split (split-sequence #\/ request-str))
+                (version (or ',version api-version))
+                (full-url (format nil
+                                  "~a~a/v~a/~a"
+                                  base-url
+                                  (first request-split) ; area part of request
+                                  version
+                                  ,url)))
+           (url-read api full-url ,params :method ,method))))
+     (export ',request :odesk)))

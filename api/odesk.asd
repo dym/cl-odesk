@@ -13,6 +13,7 @@
   :license "BSD"
   :components ((:file "packages")
                (:file "parameters" :depends-on ("packages"))
-               (:file "utils" :depends-on ("packages" "parameters"))
-               (:file "odesk" :depends-on ("packages" "parameters" "utils")))
-  :depends-on (#:iterate #:md5 #:drakma))
+               (:file "utils" :depends-on ("parameters"))
+               (:file "odesk" :depends-on ("utils"))
+               (:file "requests" :depends-on ("odesk")))
+  :depends-on (#:iterate #:md5 #:drakma #:split-sequence))

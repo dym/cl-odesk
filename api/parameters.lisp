@@ -9,3 +9,5 @@
                                         *library-name*
                                         " "
                                         *version*))
+
+(defparameter *api-base-url* "https://www.odesk.com/api/")

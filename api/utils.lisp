@@ -3,6 +3,7 @@
 (in-package :odesk)
 
 (defun get-page (url &key (method :get) params)
+  ;(format t "URL: ~a~%params: ~a~%" url params)
   (let* ((return-hash (make-hash-table))
          (request (multiple-value-list
                    (http-request url

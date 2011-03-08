@@ -6,9 +6,7 @@
   (:use :common-lisp
         :iter
         :md5
+        :split-sequence
         :drakma)
   (:export :api-json
-           :api-xml
-           :url-encode
-           :url-read
-           :get-page))
+           :api-xml))
