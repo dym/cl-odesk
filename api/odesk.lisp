@@ -15,7 +15,7 @@
     :documentation "Secret key")
    (api-token
     :initarg :api-token
-    :initform (error "Must supply api token.")
+    :initform nil
     :accessor api-token
     :documentation "Api token")
    (api-version
@@ -71,10 +71,11 @@
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
-    (append (list (cons "api_key" public-key)
-                  (cons "api_token" api-token)
-                  (cons "api_sig" (sign-url api params)))
-            params)))
+    (push (cons "api_key" public-key) params)
+    (if api-token
+        (push (cons "api_token" api-token) params))
+    (push (cons "api_sig" (sign-url api params)) params)
+    params))
 
 (defgeneric url-read (api url params &key method)
   (:documentation "Return parsed object."))
