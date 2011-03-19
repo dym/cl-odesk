@@ -108,9 +108,9 @@
 
 (defmacro def-req (request (&key url (method :get) (version nil) (params nil)) docstring)
   `(progn
-     (defgeneric ,request (api &key ,`params)
+     (defgeneric ,request (api &key params)
        (:documentation ,docstring))
-     (defmethod ,request ((api api) &key ,`params)
+     (defmethod ,request ((api api) &key params)
        (with-slots ((base-url base-url)
                     (api-version api-version)) api
          (let* ((request-str (string-downcase ',request))
