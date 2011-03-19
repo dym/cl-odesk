@@ -2,8 +2,10 @@
 
 (in-package :odesk)
 
+;;;;;;;;;;;;;;;
 ;; Auth info
-; Example: (auth/get-frob *connection)
+;;;
+; Example: (auth/get-frob *connection*)
 (def-req auth/get-frob
     (:url "keys/frobs"
           :method :post)
@@ -28,7 +30,9 @@
           :method :delete)
   "Revoke given auth.")
 
+;;;;;;;;;;;;;;;
 ;; Teams info
+;;;
 ; Example: (team/get-teamrooms *connection*)
 (def-req team/get-teamrooms
     (:url "teamrooms"
@@ -36,7 +40,9 @@
           :version 2)
   "Get all teamrooms accessible to the user.")
 
+;;;;;;;;;;;;;;;
 ;; Profiles info
+;;;
 ; Example: (profiles/get-providers *connection* :params '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-providers
     (:url "search/providers"
