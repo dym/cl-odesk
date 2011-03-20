@@ -26,3 +26,8 @@
     (setf (gethash 'reason return-hash) reason)
     (setf (gethash 'text return-hash) text)
     return-hash))
+
+;; Macro with-gensyms from gigamonkeys book
+(defmacro with-gensyms ((&rest names) &body body)
+  `(let ,(loop for n in names collect `(,n (gensym)))
+     ,@body))

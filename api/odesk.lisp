@@ -107,20 +107,20 @@
         nil)))
 
 (defmacro def-req (request (&key url (method :get) (version nil) (params nil)) docstring)
-  `(progn
-     (defgeneric ,request (api &key params)
-       (:documentation ,docstring))
-     (defmethod ,request ((api api) &key params)
-       (with-slots ((base-url base-url)
-                    (api-version api-version)) api
-         (let* ((request-str (string-downcase ',request))
-                (request-split (split-sequence #\/ request-str))
-                (version (or ',version api-version))
-                (full-url (format nil
-                                  "~a~a/v~a/~a"
-                                  base-url
-                                  (first request-split) ; area part of request
-                                  version
-                                  ,url)))
-           (url-read api full-url ,params :method ,method))))
-     (export ',request :odesk)))
+  (let ((area-url (first (split-sequence #\/ (string-downcase request)))))
+    (with-gensyms (base-url api-version url-version full-url)
+      `(progn
+         (defgeneric ,request (api &key params)
+           (:documentation ,docstring))
+         (defmethod ,request ((api api) &key params)
+           (with-slots ((,base-url base-url)
+                        (,api-version api-version)) api
+             (let* ((,url-version (or ,version ,api-version))
+                    (,full-url (format nil
+                                       "~a~a/v~a/~a"
+                                       ,base-url
+                                       ,area-url
+                                       ,url-version
+                                       ,url)))
+               (url-read api ,full-url ,params :method ,method))))
+         (export ',request :odesk)))))
