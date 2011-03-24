@@ -39,7 +39,7 @@
           :method :get)
   "Retrieve a list of all active trays and a message count for each.")
 
-; Example: (mc/list-tray *connection*)
+; Example: (mc/list-tray *connection* :tray "inbox" :username "someuser")
 (def-req mc/list-tray
     (:url "trays/{username}/{tray}"
           :sub-url (username tray)

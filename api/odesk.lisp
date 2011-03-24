@@ -102,7 +102,7 @@
 (defmethod parse-page ((api api) page)
   (let ((code (gethash 'code page))
         (text (gethash 'text page)))
-    (if (eql code 200) ; that measn HTTP_OK
+    (if (eql code 200) ; that means HTTP_OK
         text
         nil)))
 
