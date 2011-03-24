@@ -106,21 +106,28 @@
         text
         nil)))
 
-(defmacro def-req (request (&key url (method :get) (version nil) (params nil)) docstring)
-  (let ((area-url (first (split-sequence #\/ (string-downcase request)))))
-    (with-gensyms (base-url api-version url-version full-url)
+(defmacro def-req (request (&key url (method :get) (version nil) (params nil)
+                                 (sub-url nil)) docstring)
+  (let ((area-url (first (split-sequence #\/ (string-downcase request))))
+        (from-subs (mapcar #'string-downcase sub-url)))
+    (with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
-         (defgeneric ,request (api &key params)
+         (defgeneric ,request (api &key params ,@sub-url)
            (:documentation ,docstring))
-         (defmethod ,request ((api api) &key params)
+         (defmethod ,request ((api api) &key params ,@sub-url)
            (with-slots ((,base-url base-url)
                         (,api-version api-version)) api
              (let* ((,url-version (or ,version ,api-version))
+                    (,ready-url (if (every #'stringp (list ,@sub-url))
+                                    (format-url ,url
+                                                :from-subs ',from-subs
+                                                :to-subs (list ,@sub-url))
+                                    ,url))
                     (,full-url (format nil
                                        "~a~a/v~a/~a"
                                        ,base-url
                                        ,area-url
                                        ,url-version
-                                       ,url)))
+                                       ,ready-url)))
                (url-read api ,full-url ,params :method ,method))))
          (export ',request :odesk)))))

@@ -31,3 +31,18 @@
 (defmacro with-gensyms ((&rest names) &body body)
   `(let ,(loop for n in names collect `(,n (gensym)))
      ,@body))
+
+;; Format url like python .format method
+;;   (i.e.: "{username}/{tray}".format(username, tray)
+(defun format-url (url &key from-subs to-subs)
+  (let ((regex (copy-seq url)))
+    (iter
+      (for sub in from-subs)
+      (for i from 0)
+      (setf regex (cl-ppcre:regex-replace (concatenate 'string
+                                                       "{"
+                                                       (string-downcase sub)
+                                                       "}")
+                                          regex
+                                          (elt to-subs i))))
+    regex))
