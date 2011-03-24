@@ -31,6 +31,23 @@
   "Revoke given auth.")
 
 ;;;;;;;;;;;;;;;
+;; Messages Center
+;;;
+; Example: (mc/get-trays *connection*)
+(def-req mc/get-trays
+    (:url "trays"
+          :method :get)
+  "Retrieve a list of all active trays and a message count for each.")
+
+; Example: (mc/list-tray *connection*)
+(def-req mc/list-tray
+    (:url "trays/{username}/{tray}"
+          :sub-url (username tray)
+          :method :get
+          :params params)
+  "Retrive tray contents.")
+
+;;;;;;;;;;;;;;;
 ;; Teams info
 ;;;
 ; Example: (team/get-teamrooms *connection*)
