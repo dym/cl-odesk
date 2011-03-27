@@ -148,3 +148,17 @@
                                        ,ready-url)))
                (url-read api ,full-url ,params :method ,method))))
          (export ',request :odesk)))))
+
+; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))
+(defmacro with-odesk (connection (&key (format :json)
+                                       public-key
+                                       secret-key)
+                      &body body)
+  (let ((api-class (read-from-string (concatenate 'string
+                                                  "'odesk:api-"
+                                                  (string-downcase format)))))
+    `(progn
+       (let ((,connection (make-instance ,api-class
+                                         :public-key ,public-key
+                                         :secret-key ,secret-key)))
+         ,@body))))
