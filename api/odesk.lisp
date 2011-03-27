@@ -152,7 +152,8 @@
 ; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))
 (defmacro with-odesk (connection (&key (format :json)
                                        public-key
-                                       secret-key)
+                                       secret-key
+                                       api-token)
                       &body body)
   (let ((api-class (read-from-string (concatenate 'string
                                                   "'odesk:api-"
@@ -160,5 +161,6 @@
     `(progn
        (let ((,connection (make-instance ,api-class
                                          :public-key ,public-key
-                                         :secret-key ,secret-key)))
+                                         :secret-key ,secret-key
+                                         :api-token ,api-token)))
          ,@body))))

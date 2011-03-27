@@ -10,4 +10,5 @@
         :drakma)
   (:export :api-json
            :api-xml
-           :auth-url))
+           :auth-url
+           :with-odesk))
