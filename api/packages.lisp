@@ -9,4 +9,5 @@
         :split-sequence
         :drakma)
   (:export :api-json
-           :api-xml))
+           :api-xml
+           :auth-url))

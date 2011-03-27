@@ -77,6 +77,23 @@
     (push (cons "api_sig" (sign-url api params)) params)
     params))
 
+(defgeneric auth-url (api &key frob)
+  (:documentation "Return authentication url to be used in browser."))
+
+(defmethod auth-url ((api api) &key (frob nil))
+  (let ((params (if frob
+                    (list (cons "frob" frob)))))
+    (format nil
+            "~a?~(~{~2,'0X~^&~}~)"
+            *api-auth-url*
+            (map 'list
+                 #'(lambda (lst)
+                     (concatenate 'string
+                                  (car lst)
+                                  "="
+                                  (cdr lst)))
+                 (url-encode api params)))))
+
 (defgeneric url-read (api url params &key method)
   (:documentation "Return parsed object."))
 

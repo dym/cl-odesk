@@ -11,3 +11,5 @@
                                         *version*))
 
 (defparameter *api-base-url* "https://www.odesk.com/api/")
+
+(defparameter *api-auth-url* "https://www.odesk.com/services/api/auth/")
