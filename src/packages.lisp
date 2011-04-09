@@ -11,4 +11,5 @@
   (:export :api-json
            :api-xml
            :auth-url
-           :with-odesk))
+           :with-odesk
+           :*connection*))
