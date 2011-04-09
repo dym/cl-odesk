@@ -14,8 +14,7 @@
 ; Example: (auth/get-token *connection* :params '(("frob" . "enter_here_frob")))
 (def-req auth/get-token
     (:url "keys/tokens"
-          :method :post
-          :params params)
+          :method :post)
   "Get authentication token.")
 
 ; Example: (auth/check-token *connection*)
@@ -43,8 +42,7 @@
 (def-req mc/list-tray
     (:url "trays/{username}/{tray}"
           :sub-url (username tray)
-          :method :get
-          :params params)
+          :method :get)
   "Retrive tray contents.")
 
 ;;;;;;;;;;;;;;;
@@ -63,13 +61,11 @@
 ; Example: (profiles/get-providers *connection* :params '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-providers
     (:url "search/providers"
-          :method :get
-          :params params)
+          :method :get)
   "Search for workers.")
 
 ; Example: (profiles/get-jobs *connection* :params '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-jobs
     (:url "search/jobs"
-          :method :get
-          :params params)
+          :method :get)
   "Search for jobs.")

@@ -123,7 +123,7 @@
         text
         nil)))
 
-(defmacro def-req (request (&key url (method :get) (version nil) (params nil)
+(defmacro def-req (request (&key url (method :get) (version nil)
                                  (sub-url nil)) docstring)
   (let ((area-url (first (split-sequence #\/ (string-downcase request))))
         (from-subs (mapcar #'string-downcase sub-url)))
@@ -146,7 +146,7 @@
                                        ,area-url
                                        ,url-version
                                        ,ready-url)))
-               (url-read api ,full-url ,params :method ,method))))
+               (url-read api ,full-url params :method ,method))))
          (export ',request :odesk)))))
 
 ; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))
