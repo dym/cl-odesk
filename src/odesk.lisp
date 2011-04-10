@@ -41,48 +41,48 @@
     :accessor data-format
     :documentation "Data Format")))
 
-(defgeneric sign-url (api params)
-  (:documentation "Sign url params."))
+(defgeneric sign-url (api &key parameters)
+  (:documentation "Sign url parameters."))
 
-(defmethod sign-url ((api api) params)
-  (let* ((copy-params (copy-tree params))
-         (sorted-params (sort copy-params
-                              #'string<
-                              :key #'car))
-         (flaten-params (format nil
-                                "~(~{~2,'0X~}~)"
-                                (map 'list
-                                     #'(lambda (lst)
-                                         (concatenate 'string
-                                                      (car lst)
-                                                      (cdr lst)))
-                                     sorted-params))))
+(defmethod sign-url ((api api) &key parameters)
+  (let* ((copy-parameters (copy-tree parameters))
+         (sorted-parameters (sort copy-parameters
+                                  #'string<
+                                  :key #'car))
+         (flaten-parameters (format nil
+                                    "~(~{~2,'0X~}~)"
+                                    (map 'list
+                                         #'(lambda (lst)
+                                             (concatenate 'string
+                                                          (car lst)
+                                                          (cdr lst)))
+                                         sorted-parameters))))
     (with-accessors ((secret-key secret-key)) api
       (format nil "~(~{~2,'0X~}~)"
               (map 'list #'identity
                    (md5:md5sum-sequence (concatenate 'string
                                                      secret-key
-                                                     flaten-params)))))))
+                                                     flaten-parameters)))))))
 
-(defgeneric url-encode (api params)
+(defgeneric url-encode (api &key parameters)
   (:documentation "Encode url parameters."))
 
-(defmethod url-encode ((api api) params)
+(defmethod url-encode ((api api) &key parameters)
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
-    (push (cons "api_key" public-key) params)
+    (push (cons "api_key" public-key) parameters)
     (if api-token
-        (push (cons "api_token" api-token) params))
-    (push (cons "api_sig" (sign-url api params)) params)
-    params))
+        (push (cons "api_token" api-token) parameters))
+    (push (cons "api_sig" (sign-url api :parameters parameters)) parameters)
+    parameters))
 
 (defgeneric auth-url (api &key frob)
   (:documentation "Return authentication url to be used in browser."))
 
-(defmethod auth-url ((api api) &key (frob nil))
-  (let ((params (if frob
-                    (list (cons "frob" frob)))))
+(defmethod auth-url ((api api) &key frob)
+  (let ((parameters (if frob
+                        (list (cons "frob" frob)))))
     (format nil
             "~a?~(~{~2,'0X~^&~}~)"
             *api-auth-url*
@@ -92,26 +92,26 @@
                                   (car lst)
                                   "="
                                   (cdr lst)))
-                 (url-encode api params)))))
+                 (url-encode api :parameters parameters)))))
 
-(defgeneric url-read (api url params &key method)
+(defgeneric url-read (api url &key parameters method)
   (:documentation "Return parsed object."))
 
-(defmethod url-read ((api api) url params &key (method :get))
+(defmethod url-read ((api api) url &key parameters (method :get))
   (with-slots ((data-format data-format)) api
     (let ((get-url (concatenate 'string
                                 url
                                 "."
                                 data-format))
-          (copy-params (copy-tree params)))
+          (copy-parameters (copy-tree parameters)))
       (if (or (eql method :put)
               (eql method :delete))
-          (setf copy-params
+          (setf copy-parameters
                 (append (list (cons "http_method"
                                     (string-downcase method))))))
       (parse-page api (get-page get-url
                                 :method method
-                                :params (url-encode api copy-params))))))
+                                :parameters (url-encode api :parameters copy-parameters))))))
 
 (defgeneric parse-page (api page)
   (:documentation "Parse fetched page."))
@@ -129,9 +129,9 @@
         (from-subs (mapcar #'string-downcase sub-url)))
     (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
-         (defgeneric ,request (api &key params ,@sub-url)
+         (defgeneric ,request (api &key parameters ,@sub-url)
            (:documentation ,docstring))
-         (defmethod ,request ((api api) &key params ,@sub-url)
+         (defmethod ,request ((api api) &key parameters ,@sub-url)
            (with-slots ((,base-url base-url)
                         (,api-version api-version)) api
              (let* ((,url-version (or ,version ,api-version))
@@ -146,7 +146,7 @@
                                        ,area-url
                                        ,url-version
                                        ,ready-url)))
-               (url-read api ,full-url params :method ,method))))
+               (url-read api ,full-url :parameters parameters :method ,method))))
          (export ',request :odesk)))))
 
 ; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))

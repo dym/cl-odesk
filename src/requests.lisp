@@ -11,7 +11,7 @@
           :method :post)
   "Get authentication frob.")
 
-; Example: (auth/get-token *connection* :params '(("frob" . "enter_here_frob")))
+; Example: (auth/get-token *connection* :parameters '(("frob" . "enter_here_frob")))
 (def-req auth/get-token
     (:url "keys/tokens"
           :method :post)
@@ -58,13 +58,13 @@
 ;;;;;;;;;;;;;;;
 ;; Profiles info
 ;;;
-; Example: (profiles/get-providers *connection* :params '(("page" . "0;1") ("q" . "python")))
+; Example: (profiles/get-providers *connection* :parameters '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-providers
     (:url "search/providers"
           :method :get)
   "Search for workers.")
 
-; Example: (profiles/get-jobs *connection* :params '(("page" . "0;1") ("q" . "python")))
+; Example: (profiles/get-jobs *connection* :parameters '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-jobs
     (:url "search/jobs"
           :method :get)

@@ -2,15 +2,15 @@
 
 (in-package :odesk)
 
-(defun get-page (url &key (method :get) params)
-  ;(format t "URL: ~a~%params: ~a~%" url params)
+(defun get-page (url &key (method :get) parameters)
+  ;(format t "URL: ~a~%parameters: ~a~%" url parameters)
   (let* ((return-hash (make-hash-table))
          (request (multiple-value-list
                    (http-request url
                                  :want-stream t
                                  :user-agent *user-agent*
                                  :method method
-                                 :parameters params)))
+                                 :parameters parameters)))
          (status-code (elt request 1))
          (headers (elt request 2))
          (stream (elt request 4))
