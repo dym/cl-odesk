@@ -19,4 +19,5 @@
              (:file "utils" :depends-on ("parameters"))
              (:file "odesk" :depends-on ("utils"))
              (:file "requests" :depends-on ("odesk")))))
-  :depends-on (#:iterate #:md5 #:drakma #:split-sequence #:cl-ppcre))
+  :depends-on (#:iterate #:md5 #:drakma #:split-sequence
+                         #:cl-ppcre #:alexandria))

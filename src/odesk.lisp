@@ -127,7 +127,7 @@
                                  (sub-url nil)) docstring)
   (let ((area-url (first (split-sequence #\/ (string-downcase request))))
         (from-subs (mapcar #'string-downcase sub-url)))
-    (with-gensyms (base-url api-version url-version ready-url full-url)
+    (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
          (defgeneric ,request (api &key params ,@sub-url)
            (:documentation ,docstring))
