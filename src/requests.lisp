@@ -58,6 +58,14 @@
 ;;;;;;;;;;;;;;;
 ;; Profiles info
 ;;;
+; Example: (profiles/get-provider *connection* :provider "~~abcdefghijklmno")
+;          :provider is profile_key, which you can get by (hr/get-user :username "me") or by using search
+(def-req profiles/get-provider
+    (:url "providers/{provider}"
+          :sub-url (provider)
+          :method :get)
+  "Return detailed profile information about provider")
+
 ; Example: (profiles/get-providers *connection* :parameters '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-providers
     (:url "search/providers"
@@ -69,3 +77,13 @@
     (:url "search/jobs"
           :method :get)
   "Search for jobs.")
+
+;;;;;;;;;;;;;;;
+;; HR info
+;;;
+; Example: 
+(def-req hr/get-user
+    (:url "users/me"
+          :version 2
+          :method :get)
+  "Return info about current authenticated user")
