@@ -81,7 +81,7 @@
 ;;;;;;;;;;;;;;;
 ;; HR info
 ;;;
-; Example: 
+; Example: (hr/get-user *connection*)
 (def-req hr/get-user
     (:url "users/me"
           :version 2
