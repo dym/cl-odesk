@@ -129,11 +129,10 @@
         (from-subs (mapcar #'string-downcase sub-url)))
     (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
-         (defgeneric ,request (api &key parameters ,@sub-url)
-           (:documentation ,docstring))
-         (defmethod ,request ((api api) &key parameters ,@sub-url)
+         (defun ,request (&key connection parameters ,@sub-url)
+           ,docstring
            (with-slots ((,base-url base-url)
-                        (,api-version api-version)) api
+                        (,api-version api-version)) connection
              (let* ((,url-version (or ,version ,api-version))
                     (,ready-url (if (every #'stringp (list ,@sub-url))
                                     (format-url ,url
@@ -146,7 +145,7 @@
                                        ,area-url
                                        ,url-version
                                        ,ready-url)))
-               (url-read api ,full-url :parameters parameters :method ,method))))
+               (url-read connection ,full-url :parameters parameters :method ,method))))
          (export ',request :odesk)))))
 
 ; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))
