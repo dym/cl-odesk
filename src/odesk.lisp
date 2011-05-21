@@ -129,7 +129,7 @@
         (from-subs (mapcar #'string-downcase sub-url)))
     (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
-         (defun ,request (&key connection parameters ,@sub-url)
+         (defun ,request (&key (connection *connection*) parameters ,@sub-url)
            ,docstring
            (with-slots ((,base-url base-url)
                         (,api-version api-version)) connection
@@ -148,11 +148,12 @@
                (url-read connection ,full-url :parameters parameters :method ,method))))
          (export ',request :odesk)))))
 
-; Example: (with-odesk con (:public-key "PK" :secret-key "SK") (print con))
-(defmacro with-odesk (connection (&key (format :json)
-                                       public-key
-                                       secret-key
-                                       api-token)
+; Example: (with-odesk (:connection con :public-key "PK" :secret-key "SK") (print con))
+(defmacro with-odesk ((&key (connection '*connection*)
+                            (format :json)
+                            public-key
+                            secret-key
+                            api-token)
                       &body body)
   (let ((api-class (read-from-string (concatenate 'string
                                                   "'odesk:api-"
