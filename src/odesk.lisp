@@ -162,3 +162,17 @@
                                          :secret-key ,secret-key
                                          :api-token ,api-token)))
          ,@body))))
+
+; Example: (connect-odesk (:public-key "PK" :secret-key "SK"))
+(defmacro connect-odesk ((&key (format :json)
+                               public-key
+                               secret-key
+                               api-token))
+  (let ((api-class (read-from-string (concatenate 'string
+                                                  "'odesk:api-"
+                                                  (string-downcase format)))))
+    `(progn
+       (setf *connection* (make-instance ,api-class
+                                         :public-key ,public-key
+                                         :secret-key ,secret-key
+                                         :api-token ,api-token)))))

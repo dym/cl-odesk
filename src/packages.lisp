@@ -12,4 +12,5 @@
            :api-xml
            :auth-url
            :with-odesk
+           :connect-odesk
            :*connection*))
