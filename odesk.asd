@@ -8,7 +8,7 @@
 
 (defsystem odesk
   :name "Common Lisp oDesk Library"
-  :version "1.0.0-pre"
+  :version "0.2.0"
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
   :license "BSD"
   :components
