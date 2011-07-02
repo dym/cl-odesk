@@ -1,4 +1,11 @@
 =========================
+What is cl-odesk?
+=========================
+This is cl-odesk, an implementation of the oDesk API in Common Lisp.
+
+Spec URI: http://developers.odesk.com
+
+=========================
 Example Usage
 =========================
 
