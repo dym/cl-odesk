@@ -77,8 +77,10 @@
     (push (cons "api_sig" (sign-url api :parameters parameters)) parameters)
     parameters))
 
-(defun auth-url (&key (connection *connection*) frob)
-  "Return authentication url to be used in browser."
+(defgeneric build-auth-url (api &key frob)
+  (:documentation "Return authentication url to be used in browser.."))
+
+(defmethod build-auth-url ((api api) &key frob)
   (let ((parameters (if frob
                         (list (cons "frob" frob)))))
     (format nil
@@ -90,7 +92,11 @@
                                   (car lst)
                                   "="
                                   (cdr lst)))
-                 (encode-url connection :parameters parameters)))))
+                 (encode-url api :parameters parameters)))))
+
+(defun auth-url (&key (connection *connection*) frob)
+  "Return authentication url to be used in browser."
+  (build-auth-url connection :frob frob))
 
 (defgeneric url-read (api url &key parameters method)
   (:documentation "Return parsed object."))
