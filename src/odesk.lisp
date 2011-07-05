@@ -64,10 +64,10 @@
                                                      secret-key
                                                      flaten-parameters)))))))
 
-(defgeneric url-encode (api &key parameters)
+(defgeneric encode-url (api &key parameters)
   (:documentation "Encode url parameters."))
 
-(defmethod url-encode ((api api) &key parameters)
+(defmethod encode-url ((api api) &key parameters)
   (with-accessors ((public-key public-key)
                    (secret-key secret-key)
                    (api-token api-token)) api
@@ -90,7 +90,7 @@
                                   (car lst)
                                   "="
                                   (cdr lst)))
-                 (url-encode connection :parameters parameters)))))
+                 (encode-url connection :parameters parameters)))))
 
 (defgeneric url-read (api url &key parameters method)
   (:documentation "Return parsed object."))
@@ -109,7 +109,7 @@
                                     (string-downcase method))))))
       (parse-page api (get-page get-url
                                 :method method
-                                :parameters (url-encode api :parameters copy-parameters))))))
+                                :parameters (encode-url api :parameters copy-parameters))))))
 
 (defgeneric parse-page (api page)
   (:documentation "Parse fetched page."))
