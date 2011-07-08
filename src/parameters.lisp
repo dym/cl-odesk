@@ -3,7 +3,7 @@
 (in-package :odesk)
 
 (defparameter *library-name* "cl-odesk")
-(defparameter *version* "0.2.0")
+(defparameter *version* "0.2.1")
 
 (defparameter *user-agent* (concatenate 'string
                                         *library-name*
