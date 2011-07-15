@@ -8,7 +8,7 @@
 
 (defsystem odesk
   :name "Common Lisp oDesk Library"
-  :version "0.2.1"
+  :version "0.3.0"
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
   :license "BSD"
   :components
@@ -20,4 +20,4 @@
              (:file "odesk" :depends-on ("utils"))
              (:file "requests" :depends-on ("odesk")))))
   :depends-on (#:iterate #:md5 #:drakma #:split-sequence
-                         #:cl-ppcre #:alexandria))
+                         #:cl-ppcre #:alexandria #:cl-oauth))
