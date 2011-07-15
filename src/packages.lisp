@@ -8,8 +8,7 @@
         :md5
         :split-sequence
         :drakma)
-  (:export :api-json
-           :api-xml
+  (:export :api
            :auth-url
            :with-odesk
            :connect-odesk

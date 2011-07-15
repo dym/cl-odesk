@@ -3,7 +3,11 @@
 (in-package :odesk)
 
 (defclass api ()
-  ((public-key
+  ((data-format
+    :initform "json"
+    :accessor data-format
+    :documentation "Data Format")
+   (public-key
     :initarg :public-key
     :initform (error "Must supply public key.")
     :accessor public-key
@@ -28,18 +32,6 @@
     :initform *api-base-url*
     :accessor base-url
     :documentation "Base url for API requests.")))
-
-(defclass api-json (api)
-  ((data-format
-    :initform "json"
-    :accessor data-format
-    :documentation "Data Format")))
-
-(defclass api-xml (api)
-  ((data-format
-    :initform "xml"
-    :accessor data-format
-    :documentation "Data Format")))
 
 (defgeneric sign-url (api &key parameters)
   (:documentation "Sign url parameters."))
@@ -159,11 +151,10 @@
                             secret-key
                             api-token)
                       &body body)
-  (let ((api-class (read-from-string (concatenate 'string
-                                                  "'odesk:api-"
-                                                  (string-downcase format)))))
+  (let ((api-class 'odesk:api))
     `(progn
        (let ((,connection (make-instance ,api-class
+                                         :data-format format
                                          :public-key ,public-key
                                          :secret-key ,secret-key
                                          :api-token ,api-token)))
@@ -174,11 +165,10 @@
                                public-key
                                secret-key
                                api-token))
-  (let ((api-class (read-from-string (concatenate 'string
-                                                  "'odesk:api-"
-                                                  (string-downcase format)))))
+  (let ((api-class 'odesk:api))
     `(progn
        (setf *connection* (make-instance ,api-class
+                                         :data-format format
                                          :public-key ,public-key
                                          :secret-key ,secret-key
                                          :api-token ,api-token)))))
