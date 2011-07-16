@@ -10,6 +10,7 @@
                                         *odesk-version-string*))
 
 (defparameter *api-base-url* "https://www.odesk.com/api/")
+(defparameter *gds-base-url* "https://www.odesk.com/gds/")
 (defparameter *api-auth-url* "https://www.odesk.com/services/api/auth/")
 
 ;; Dynamic variable to hold current api instance.

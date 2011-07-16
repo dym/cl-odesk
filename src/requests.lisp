@@ -59,7 +59,7 @@
 ;; Profiles info
 ;;;
 ; Example: (profiles/get-provider :connection *connection* :provider "~~abcdefghijklmno")
-;          :provider is profile_key, which you can get by (hr/get-user :username "me") or by using search
+;          :provider is profile_key, which you can get by (hr/get-user) or by using search
 (def-req profiles/get-provider
     (:url "providers/{provider}"
           :sub-url (provider)
@@ -82,8 +82,57 @@
 ;; HR info
 ;;;
 ; Example: (hr/get-user :connection *connection*)
-(def-req hr/get-user
+(def-req hr/get-myself
     (:url "users/me"
           :version 2
           :method :get)
   "Return info about current authenticated user")
+
+(def-req hr/get-user
+    (:url "users/{user}"
+          :sub-url (user)
+          :version 2
+          :method :get)
+  "Return info about current authenticated user")
+
+(def-req hr/get-companies
+    (:url "companies"
+          :version 2
+          :method :get)
+  "Return all the companies the current authorized user has access to on oDesk")
+
+(def-req hr/get-teams
+    (:url "teams"
+          :version 2
+          :method :get)
+  "This call returns all the teams that a user has acccess to")
+
+;;;;;;;;;;;;;;;
+;; Time Reports
+;;;
+; Example: (odesk:timereports/get-company :connection *test-connection* :company "oDesk")
+(def-gds timereports/get-company
+    (:url "companies/{company}"
+          :sub-url (company)
+          :method :get)
+  "Generate company wide time reports")
+
+; Example: (odesk:timereports/get-team  :connection *test-connection* :company "51578" :team "313030")
+(def-gds timereports/get-team
+    (:url "companies/{company}/teams/{team}"
+          :sub-url (company team)
+          :method :get)
+  "Generate time report for a specific team")
+
+(def-gds timereports/get-agency
+    (:url "companies/{company}/agencies/{agency}"
+          :sub-url (company agency)
+          :method :get)
+  "Generate time report for a specific agency")
+
+(def-gds timereports/get-provider
+    (:url "providers/{provider}"
+          :sub-url (provider)
+          :method :get)
+  "Generate time report for a specific provider")
+

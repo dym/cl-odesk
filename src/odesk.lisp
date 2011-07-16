@@ -27,11 +27,16 @@
     :initform 1
     :accessor api-version
     :documentation "Major version of the API.")
-   (base-url
-    :initarg :base-url
+   (api-url
+    :initarg :api-url
     :initform *api-base-url*
-    :accessor base-url
-    :documentation "Base url for API requests.")))
+    :accessor api-url
+    :documentation "Base url for API requests.")
+   (gds-url
+    :initarg :gds-url
+    :initform *gds-base-url*
+    :accessor gds-url
+    :documentation "Base GDS url for API requests.")))
 
 (defgeneric sign-url (api &key parameters)
   (:documentation "Sign url parameters."))
@@ -42,12 +47,12 @@
                                   #'string<
                                   :key #'car))
          (flaten-parameters (format nil
-                                    "~(~{~2,'0X~}~)"
+                                    "~{~2,'0X~}"
                                     (map 'list
                                          #'(lambda (lst)
-                                             (concatenate 'string
-                                                          (car lst)
-                                                          (cdr lst)))
+                                             (format nil "~a~a"
+                                                     (car lst)
+                                                     (cdr lst)))
                                          sorted-parameters))))
     (with-accessors ((secret-key secret-key)) api
       (format nil "~(~{~2,'0X~}~)"
@@ -93,13 +98,19 @@
 (defgeneric url-read (api url &key parameters method)
   (:documentation "Return parsed object."))
 
-(defmethod url-read ((api api) url &key parameters (method :get))
+(defmethod url-read ((api api) url &key parameters (method :get) (request-type :api))
   (with-slots ((data-format data-format)) api
-    (let ((get-url (concatenate 'string
-                                url
-                                "."
-                                data-format))
-          (copy-parameters (copy-tree parameters)))
+    (let* ((get-url (cond ((equal request-type :gds) url)
+                          (t (concatenate 'string
+                                          url
+                                          "."
+                                          data-format))))
+           (copy-parameters (copy-tree parameters))
+           (copy-parameters (cond ((equal request-type :gds)
+                                   (append (list (cons "tqx"
+                                                       (format nil "out:~a" (string-downcase data-format))))
+                                           copy-parameters))
+                                  (t copy-parameters))))
       (if (or (eql method :put)
               (eql method :delete))
           (setf copy-parameters
@@ -119,15 +130,17 @@
         text
         nil)))
 
-(defmacro def-req (request (&key url (method :get) (version nil)
-                                 (sub-url nil)) docstring)
+(defmacro def-req (request (&key url
+                                 (method :get)
+                                 version
+                                 sub-url) docstring)
   (let ((area-url (first (split-sequence #\/ (string-downcase request))))
         (from-subs (mapcar #'string-downcase sub-url)))
     (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
       `(progn
          (defun ,request (&key (connection *connection*) parameters ,@sub-url)
            ,docstring
-           (with-slots ((,base-url base-url)
+           (with-slots ((,base-url api-url)
                         (,api-version api-version)) connection
              (let* ((,url-version (or ,version ,api-version))
                     (,ready-url (if (every #'stringp (list ,@sub-url))
@@ -141,7 +154,34 @@
                                        ,area-url
                                        ,url-version
                                        ,ready-url)))
-               (url-read connection ,full-url :parameters parameters :method ,method))))
+               (url-read connection ,full-url :parameters parameters :method ,method :request-type :api))))
+         (export ',request :odesk)))))
+
+(defmacro def-gds (request (&key url
+                                 (method :get)
+                                 version
+                                 sub-url) docstring)
+  (let ((area-url (first (split-sequence #\/ (string-downcase request))))
+        (from-subs (mapcar #'string-downcase sub-url)))
+    (alexandria:with-gensyms (base-url api-version url-version ready-url full-url)
+      `(progn
+         (defun ,request (&key (connection *connection*) parameters ,@sub-url)
+           ,docstring
+           (with-slots ((,base-url gds-url)
+                        (,api-version api-version)) connection
+             (let* ((,url-version (or ,version ,api-version))
+                    (,ready-url (if (every #'stringp (list ,@sub-url))
+                                    (format-url ,url
+                                                :from-subs ',from-subs
+                                                :to-subs (list ,@sub-url))
+                                    ,url))
+                    (,full-url (format nil
+                                       "~a~a/v~a/~a"
+                                       ,base-url
+                                       ,area-url
+                                       ,url-version
+                                       ,ready-url)))
+               (url-read connection ,full-url :parameters parameters :method ,method :request-type :gds))))
          (export ',request :odesk)))))
 
 ; Example: (with-odesk (:connection con :public-key "PK" :secret-key "SK") (print con))
