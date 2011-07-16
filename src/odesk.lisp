@@ -193,8 +193,8 @@
                       &body body)
   (let ((api-class 'odesk:api))
     `(progn
-       (let ((,connection (make-instance ,api-class
-                                         :data-format format
+       (let ((,connection (make-instance ',api-class
+                                         :data-format ,format
                                          :public-key ,public-key
                                          :secret-key ,secret-key
                                          :api-token ,api-token)))
@@ -207,8 +207,8 @@
                                api-token))
   (let ((api-class 'odesk:api))
     `(progn
-       (setf *connection* (make-instance ,api-class
-                                         :data-format format
+       (setf *connection* (make-instance ',api-class
+                                         :data-format ,format
                                          :public-key ,public-key
                                          :secret-key ,secret-key
                                          :api-token ,api-token)))))
