@@ -6,9 +6,16 @@
 
 (in-package :odesk-api-asd)
 
+(defvar *odesk-version-string* "0.2.1"
+  "cl-odesk version number as a string.")
+
+;; we export its name so we can import it later
+(export '*odesk-version-string*)
+
+
 (defsystem odesk
   :name "Common Lisp oDesk Library"
-  :version "0.2.1"
+  :version #.*odesk-version-string*
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
   :license "BSD"
   :components
