@@ -4,6 +4,7 @@
 
 (defclass api ()
   ((data-format
+    :initarg :data-format
     :initform "json"
     :accessor data-format
     :documentation "Data Format")
@@ -104,7 +105,7 @@
                           (t (concatenate 'string
                                           url
                                           "."
-                                          data-format))))
+                                          (string-downcase data-format)))))
            (copy-parameters (copy-tree parameters))
            (copy-parameters (cond ((equal request-type :gds)
                                    (append (list (cons "tqx"
