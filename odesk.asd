@@ -6,7 +6,7 @@
 
 (in-package :odesk-api-asd)
 
-(defvar *odesk-version-string* "0.2.1"
+(defvar *odesk-version-string* "0.3.0"
   "cl-odesk version number as a string.")
 
 ;; we export its name so we can import it later
