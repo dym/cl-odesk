@@ -136,3 +136,11 @@
           :method :get)
   "Generate time report for a specific provider")
 
+;;;;;;;;;;;;;;;
+;; Work Diary
+;;;
+(def-req team/get-workdiary
+    (:url "workdiaries/{company}/{username}/{date}"
+          :sub-url (company username date)
+          :method :get)
+  "Retrieve all snapshots from a single user account within a single day")
