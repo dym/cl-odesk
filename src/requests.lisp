@@ -81,26 +81,29 @@
 ;;;;;;;;;;;;;;;
 ;; HR info
 ;;;
-; Example: (hr/get-user :connection *connection*)
+; Example: (hr/get-myself :connection *connection*)
 (def-req hr/get-myself
     (:url "users/me"
           :version 2
           :method :get)
   "Return info about current authenticated user")
 
+; Example: (hr/get-user :connection *connection* :user "me")
 (def-req hr/get-user
     (:url "users/{user}"
           :sub-url (user)
           :version 2
           :method :get)
-  "Return info about current authenticated user")
+  "Return info about some user")
 
+; Example: (hr/get-companies :connection *connection*)
 (def-req hr/get-companies
     (:url "companies"
           :version 2
           :method :get)
   "Return all the companies the current authorized user has access to on oDesk")
 
+; Example: (hr/get-teams :connection *connection*)
 (def-req hr/get-teams
     (:url "teams"
           :version 2
@@ -110,26 +113,29 @@
 ;;;;;;;;;;;;;;;
 ;; Time Reports
 ;;;
-; Example: (odesk:timereports/get-company :connection *test-connection* :company "oDesk")
+; Example: (odesk:timereports/get-company  :connection *test-connection* :company "company" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
 (def-gds timereports/get-company
     (:url "companies/{company}"
           :sub-url (company)
           :method :get)
   "Generate company wide time reports")
 
-; Example: (odesk:timereports/get-team  :connection *test-connection* :company "51578" :team "313030")
+; Example: (odesk:timereports/get-team :connection *test-connection* :company "company" :team "team" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
 (def-gds timereports/get-team
     (:url "companies/{company}/teams/{team}"
           :sub-url (company team)
           :method :get)
   "Generate time report for a specific team")
 
+
+; Example: (odesk:timereports/get-agency :connection *test-connection* :company "company" :agency "agency" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
 (def-gds timereports/get-agency
     (:url "companies/{company}/agencies/{agency}"
           :sub-url (company agency)
           :method :get)
   "Generate time report for a specific agency")
 
+; Example: (odesk:timereports/get-provider :connection *test-connection* :provider "dbudashny" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
 (def-gds timereports/get-provider
     (:url "providers/{provider}"
           :sub-url (provider)
@@ -139,6 +145,7 @@
 ;;;;;;;;;;;;;;;
 ;; Work Diary
 ;;;
+; Example: (odesk:team/get-workdiary :connection *test-connection* :company "company" :username "dbudashny" :date "20110721")
 (def-req team/get-workdiary
     (:url "workdiaries/{company}/{username}/{date}"
           :sub-url (company username date)
