@@ -55,6 +55,21 @@
           :version 2)
   "Get all teamrooms accessible to the user.")
 
+; Example: (team/get-teamroom :connection *connection* :team "team")
+(def-req team/get-teamroom
+    (:url "teamrooms/{team}"
+          :sub-url (team)
+          :method :get
+          :version 2)
+  "Get all teamrooms accessible to the user.")
+
+; Example: (odesk:team/get-workdiary :connection *test-connection* :company "company" :username "dbudashny" :date "20110721")
+(def-req team/get-workdiary
+    (:url "workdiaries/{company}/{username}/{date}"
+          :sub-url (company username date)
+          :method :get)
+  "Retrieve all snapshots from a single user account within a single day")
+
 ;;;;;;;;;;;;;;;
 ;; Profiles info
 ;;;
@@ -65,6 +80,12 @@
           :sub-url (provider)
           :method :get)
   "Return detailed profile information about provider")
+
+(def-req profiles/get-provider-brief
+    (:url "providers/{provider}/brief"
+          :sub-url (provider)
+          :method :get)
+  "Return brief profile information about provider")
 
 ; Example: (profiles/get-providers :connection *connection* :parameters '(("page" . "0;1") ("q" . "python")))
 (def-req profiles/get-providers
@@ -103,6 +124,30 @@
           :method :get)
   "Return all the companies the current authorized user has access to on oDesk")
 
+; Example: (hr/get-company :connection *connection* :company "company")
+(def-req hr/get-company
+    (:url "companies/{company}"
+          :sub-url (company)
+          :version 2
+          :method :get)
+  "Return details regarding a specific company")
+
+; Example: (hr/get-company-teams :connection *connection* :company "company")
+(def-req hr/get-company-teams
+    (:url "companies/{company}/teams"
+          :sub-url (company)
+          :version 2
+          :method :get)
+  "Return a list of teams within the company being referenced")
+
+; Example: (hr/get-company-users :connection *connection* :company "company")
+(def-req hr/get-company-users
+    (:url "companies/{company}/users"
+          :sub-url (company)
+          :version 2
+          :method :get)
+  "Return a list of all users within the referenced company")
+
 ; Example: (hr/get-teams :connection *connection*)
 (def-req hr/get-teams
     (:url "teams"
@@ -110,10 +155,18 @@
           :method :get)
   "This call returns all the teams that a user has acccess to")
 
+; Example: (hr/get-team-users :connection *connection*)
+(def-req hr/get-team-users
+    (:url "teams/{team}/users"
+          :sub-url (team)
+          :version 2
+          :method :get)
+  "This will return user details for all users in the referenced team")
+
 ;;;;;;;;;;;;;;;
 ;; Time Reports
 ;;;
-; Example: (odesk:timereports/get-company  :connection *test-connection* :company "company" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
+; Example: (odesk:timereports/get-company :connection *test-connection* :company "company" :parameters '(("tq" . "SELECT hours WHERE (worked_on <= '2011-07-16') AND (worked_on > '2011-07-14')")))
 (def-gds timereports/get-company
     (:url "companies/{company}"
           :sub-url (company)
@@ -141,13 +194,3 @@
           :sub-url (provider)
           :method :get)
   "Generate time report for a specific provider")
-
-;;;;;;;;;;;;;;;
-;; Work Diary
-;;;
-; Example: (odesk:team/get-workdiary :connection *test-connection* :company "company" :username "dbudashny" :date "20110721")
-(def-req team/get-workdiary
-    (:url "workdiaries/{company}/{username}/{date}"
-          :sub-url (company username date)
-          :method :get)
-  "Retrieve all snapshots from a single user account within a single day")
