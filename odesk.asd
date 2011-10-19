@@ -13,7 +13,7 @@
 (export '*odesk-version-string*)
 
 
-(defsystem odesk
+(defsystem #:odesk
   :name "Common Lisp oDesk Library"
   :version #.*odesk-version-string*
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
