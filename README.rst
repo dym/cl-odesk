@@ -92,6 +92,17 @@ Authentication via OAuth
 -----------------
 no support at all.
 
+URL Shortening
+--------------
+
+* Shorten URL::
+
+  shorturl/get-shorten (tested)
+
+* Expand URL::
+
+  shorturl/get-expand (tested)
+
 Financial Reporting
 -----------------
 * Generate Billing Reports for a Specific Provider::

@@ -194,3 +194,20 @@
           :sub-url (provider)
           :method :get)
   "Generate time report for a specific provider")
+
+;;;;;;;;;;;;;;;;;
+;; URL Shortener
+;;;
+; Example: (shorturl/get-shorten :connection *connection* :parameters '(("url" . "http://..")))
+(def-req shorturl/get-shorten
+    (:url "shorten"
+          :version 1
+          :method :get)
+  "Return shortened url.")
+
+; Example: (shorturl/get-expand :connection *connection* :parameters '(("url" . "http://..")))
+(def-req shorturl/get-expand
+    (:url "expand"
+          :version 1
+          :method :get)
+  "Return expanded url.")
