@@ -15,6 +15,7 @@
 
 (defsystem #:odesk
   :name "Common Lisp oDesk Library"
+  :description "Common Lisp bindings for oDesk API"
   :version #.*odesk-version-string*
   :author "Dmitriy Budashny <dmitriy.budashny@gmail.com>"
   :license "BSD"
